@@ -38,7 +38,8 @@ void setup()
  Serial.begin(9600);
 }
 
-void Move(long s , int p)//馬達動作
+/*馬達動作*/
+void Move(long s , int p)
 {
  if(p>0)//馬達正轉
  {
@@ -62,7 +63,7 @@ void Move(long s , int p)//馬達動作
     digitalWrite(motorA,HIGH);
     digitalWrite(motorB,HIGH);
     myStepper.setSpeed(s);
-    myStepper.step(1);//正數為正方向,負數為反方向 
+    myStepper.step(1); 
    }
   }
  }
@@ -89,12 +90,13 @@ void Move(long s , int p)//馬達動作
     digitalWrite(motorA,HIGH);
     digitalWrite(motorB,HIGH);
     myStepper.setSpeed(s);
-    myStepper.step(-1);//正數為正方向,負數為反方向 
+    myStepper.step(-1);
    }
   }
  }
 }
- 
+
+/*數值讀取*/ 
 String read_Data() 
 { 
  delay(10);
@@ -121,7 +123,6 @@ if(digitalRead(forward) == HIGH && digitalRead(back) == LOW)//前進鈕按下後
  {
    if(digitalRead(FL) == HIGH)
    {
-    //delay(100);
     Serial.println("forward");
     s = 100;
     p = 200;
@@ -133,7 +134,6 @@ else if(digitalRead(forward) == LOW && digitalRead(back) == HIGH)//後退鈕按�
  {
    if(digitalRead(BL) == HIGH)
    {
-    //delay(100);
     Serial.println("back");
     s = 100;
     p = -200;
@@ -158,25 +158,25 @@ String comdata = "";//清空
 val=Serial.read();
 if(val>0)
  {    
-  if(val == 83)//S
+  if(val == 83)//S 速度
   {
    s=read_Data().toInt();
    Serial.println(s);
   }
  
-  if(val==80)//P
+  if(val==80)//P 步數
   {
    p=read_Data().toInt();  
    Serial.println(p);  
   } 
  
-  if(val == 77)//M
+  if(val == 77)//M 移動
   {
    Move(s,p);
    Serial.println("Move");
   } 
  
-  if(val == 72)//H
+  if(val == 72)//H 回原點
   {
    Serial.println("HOME");
    if(digitalRead(FL) == HIGH)
@@ -189,7 +189,7 @@ if(val>0)
    x=0;
   }
  
-  if(val == 79)//O 
+  if(val == 79)//O 歸零
   {
    Serial.println("zero");
    data=0;//資料清除歸零
@@ -204,7 +204,6 @@ if(val>0)
  if(x!=0)
  {
   data = data + x;
-  //Serial.println(data);
   dataval = data * (1.5 /200);//將步數轉為mm,螺桿節徑=1.5,轉一圈的步數=200
   Serial.println(dataval); 
   /*LCD顯示*/
