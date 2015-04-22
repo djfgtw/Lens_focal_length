@@ -49,7 +49,6 @@ void Move(long s , int p)
    {
     digitalWrite(motorA,LOW);
     digitalWrite(motorB,LOW);
-    //Serial.println("FL");
     p=0;
     if(digitalRead(back) == HIGH)
     {
@@ -76,7 +75,6 @@ void Move(long s , int p)
    {
     digitalWrite(motorA,LOW);
     digitalWrite(motorB,LOW);
-    //Serial.println("BL");
     p=0;
     if(digitalRead(forward) == HIGH)
     {
