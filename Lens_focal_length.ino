@@ -49,7 +49,7 @@ void Move(long s , int p)
    {
     digitalWrite(motorA,LOW);
     digitalWrite(motorB,LOW);
-    Serial.println("FL");
+    //Serial.println("FL");
     p=0;
     if(digitalRead(back) == HIGH)
     {
@@ -76,7 +76,7 @@ void Move(long s , int p)
    {
     digitalWrite(motorA,LOW);
     digitalWrite(motorB,LOW);
-    Serial.println("BL");
+    //Serial.println("BL");
     p=0;
     if(digitalRead(forward) == HIGH)
     {
@@ -140,7 +140,17 @@ else if(digitalRead(forward) == LOW && digitalRead(back) == HIGH)//後退鈕按�
    }
    Move(s , p);//反轉200步,速度20rpm 
  } 
- 
+/*極限狀態*/
+if(digitalRead(FL) == LOW)
+   {
+    delay(100);
+    Serial.println("FL"); 
+   }
+if(digitalRead(BL) == LOW)
+   {
+    delay(100);
+    Serial.println("BL"); 
+   }
 /*歸零動作*/
 if(digitalRead(zero) == HIGH)//歸零鈕按下後歸零
  {
@@ -181,7 +191,7 @@ if(val>0)
    Serial.println("HOME");
    if(digitalRead(FL) == HIGH)
    {
-    p=2000;
+    p=20000;
     Move(60, p);       
    }  
    delay(100);
