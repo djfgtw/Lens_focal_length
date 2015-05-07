@@ -8,8 +8,8 @@ Stepper myStepper(200,8,11,9,12);//轉一圈的步數=200 ,A=8 ,A'=11 ,B=9 ,B'=1
 int forward = 5;//前進鈕
 int back = 6;//後退鈕
 int zero = 4;//歸零鈕
-int FL = 2;//前極限
-int BL = 3;//後極限
+int FL = 3;//前極限
+int BL = 2;//後極限
 int motorA= 10;//A線圈致能
 int motorB= 13;//B線圈致能
 
@@ -36,6 +36,12 @@ void setup()
  pinMode(motorB, OUTPUT);
  
  Serial.begin(9600);
+ lcd.setCursor(0,0);
+ lcd.print("Distance");
+ lcd.setCursor(9,1);
+ lcd.print(0.0);
+ lcd.setCursor(14,1);
+ lcd.print("mm"); 
 }
 
 /*馬達動作*/
@@ -43,19 +49,19 @@ void Move(long s , int p)
 {
  if(p>0)//馬達正轉
  {
-   for(x=0 ; x<=p ; x++)
+   for(x=0 ; x<p ; x++)
   {
    if(digitalRead(FL) == LOW)
    {
-    digitalWrite(motorA,LOW);
-    digitalWrite(motorB,LOW);
+    x=0;
     p=0;
+    digitalWrite(motorA,LOW);
+    digitalWrite(motorB,LOW);    
     if(digitalRead(back) == HIGH)
     {
      digitalWrite(motorA,HIGH);
      digitalWrite(motorB,HIGH);
-    }
-    x=0;
+    }    
    } 
    else
    {
@@ -69,19 +75,19 @@ void Move(long s , int p)
  
  if(p<0)//馬達反轉
  {
-  for(x=0 ; x>=p ; x--)
+  for(x=0 ; x>p ; x--)
   {
    if(digitalRead(BL) == LOW)
    {
-    digitalWrite(motorA,LOW);
-    digitalWrite(motorB,LOW);
+    x=0;
     p=0;
+    digitalWrite(motorA,LOW);
+    digitalWrite(motorB,LOW);    
     if(digitalRead(forward) == HIGH)
     {
      digitalWrite(motorA,HIGH);
      digitalWrite(motorB,HIGH);
-    }    
-    x=0; 
+    }
    }
    else
    {
@@ -122,10 +128,11 @@ if(digitalRead(forward) == HIGH && digitalRead(back) == LOW)//前進鈕按下後
    if(digitalRead(FL) == HIGH)
    {
     Serial.println("forward");
-    s = 100;
-    p = 200;
+    s = 150;
+    p = 20;
    }
-   Move(s , p);//正轉200步,速度20rpm 
+   Move(s , p);//正轉200步,速度20rpm
+   p=0;
  } 
 /*後退動作*/
 else if(digitalRead(forward) == LOW && digitalRead(back) == HIGH)//後退鈕按下後執行
@@ -133,10 +140,11 @@ else if(digitalRead(forward) == LOW && digitalRead(back) == HIGH)//後退鈕按�
    if(digitalRead(BL) == HIGH)
    {
     Serial.println("back");
-    s = 100;
-    p = -200;
+    s = 150;
+    p = -20;
    }
    Move(s , p);//反轉200步,速度20rpm 
+   p=0;
  } 
 /*極限狀態*/
 if(digitalRead(FL) == LOW)
@@ -169,12 +177,14 @@ if(val>0)
   if(val == 83)//S 速度
   {
    s=read_Data().toInt();
+   Serial.print("S");
    Serial.println(s);
   }
  
   if(val==80)//P 步數
   {
-   p=read_Data().toInt();  
+   p=read_Data().toInt(); 
+   Serial.print("P"); 
    Serial.println(p);  
   } 
  
@@ -186,25 +196,25 @@ if(val>0)
  
   if(val == 72)//H 回原點
   {
-   Serial.println("HOME");
    if(digitalRead(FL) == HIGH)
    {
     p=20000;
-    Move(60, p);       
+    Move(150, p);       
    }  
    delay(100);
-   Move(100 , -200);//到前極限後退1圈
+   Move(100 , -100);//到前極限後退0.5圈
    x=0;
+   Serial.println("HOME");
   }
  
   if(val == 79)//O 歸零
   {
-   Serial.println("zero");
+   Serial.println("Zero");
    data=0;//資料清除歸零
    dataval=0;
    lcd.setCursor(9,1);
    lcd.print(dataval);
-   Serial.println(dataval);  
+   Serial.println(dataval);
   }  
  }
 
@@ -212,15 +222,15 @@ if(val>0)
  if(x!=0)
  {
   data = data + x;
-  dataval = data * (1.5 /200);//將步數轉為mm,螺桿節徑=1.5,轉一圈的步數=200
+  dataval = data * (1.0/200);//將步數轉為mm,螺桿節徑=1.0,轉一圈的步數=200
   Serial.println(dataval); 
   /*LCD顯示*/
   lcd.setCursor(0,0);
   lcd.print("Distance");
   lcd.setCursor(9,1);
   lcd.print(dataval);
-  lcd.setCursor(13,1);
-  lcd.print(" mm"); 
+  lcd.setCursor(14,1);
+  lcd.print("mm"); 
   x=0;
  }
 }
